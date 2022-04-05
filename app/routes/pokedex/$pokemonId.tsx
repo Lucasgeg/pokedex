@@ -4,9 +4,9 @@ import { json, Link, useLoaderData, useParams } from "remix";
 
 type LoaderData = {
   pokemon: {
-    abilities: [{ name: string }];
+    abilities: [{ ability : {name : string} }];
     name: string;
-    sprites: [{ back_default: string }];
+    sprites:{ other: {dream_world: {front_default: string}} };
   };
 };
 export const loader: LoaderFunction = async ({ params }) => {
@@ -22,19 +22,20 @@ export const loader: LoaderFunction = async ({ params }) => {
 };
 
 export default function PokemonById() {
-  const {pokemon} = useLoaderData<LoaderData>();  
+  const {pokemon} = useLoaderData<LoaderData>();
+  console.log(pokemon.sprites.other.dream_world.front_default);
+    
   return (
     <div className="container">
       <h1>Individual page of {pokemon.name}</h1>
-      {pokemon.sprites &&
-      pokemon.sprites[0] &&
-      pokemon.sprites[0].back_default ? (
-        <img src={pokemon.sprites[0].back_default} alt={pokemon.name} />
+      {pokemon.sprites
+       ? (
+        <img src={pokemon.sprites.other.dream_world.front_default} alt={pokemon.name} />
       ) : null}
       <h2>Capacité de base:</h2>
       <ul>
-        {pokemon.abilities.map(({ name }) => (
-          <li key={name}>{name}</li>
+        {pokemon.abilities.map((cap) => (
+          <li key={cap.ability.name}>{cap.ability.name}</li>
         ))}
       </ul>
     </div>
