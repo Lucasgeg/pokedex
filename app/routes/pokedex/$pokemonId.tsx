@@ -28,13 +28,13 @@ export default function PokemonById() {
   return (
     <div className="container">
       <h1>Individual page of {pokemon.name}</h1>
-      {pokemon.sprites
+      {pokemon?.sprites?.other?.dream_world?.front_default
        ? (
         <img src={pokemon.sprites.other.dream_world.front_default} alt={pokemon.name} />
       ) : null}
       <h2>Capacité de base:</h2>
       <ul>
-        {pokemon.abilities.map((cap) => (
+        {pokemon?.abilities.map((cap) => (
           <li key={cap.ability.name}>{cap.ability.name}</li>
         ))}
       </ul>
