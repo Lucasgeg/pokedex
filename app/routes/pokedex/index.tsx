@@ -1,13 +1,36 @@
+import { useQuery } from "react-query";
 import { Link, LoaderFunction } from "remix";
 import { json, useLoaderData } from "remix";
+import clsx from "clsx";
 import axios from "axios";
 
+import "~/styles/pokedex.css";
+
+type Pokemon = {
+  name: string;
+  url: string;
+  id: number;
+  sprite: string;
+  type: string;
+};
 type PokePagination = { offset: string | null; limit: string | null };
 type LoaderData = {
-  pokemonList: Array<{ name: string; url: string }>;
+  pokemonList: Pokemon[];
+
   currentPage: String;
   nextContext: PokePagination | null;
   previousContext: PokePagination | null;
+};
+type PokemonDetailResponse = {
+  id: number;
+  sprites: {
+    other: {
+      dream_world: {
+        front_default: string;
+      };
+    };
+  };
+  types: [{ type: { name: string } }];
 };
 
 const getPaginationInfo = (url: string | null) => {
@@ -27,8 +50,22 @@ export const loader: LoaderFunction = async ({ request }) => {
   const {
     data: { results, next, previous },
   } = await axios.get(currentPage);
-  const pokemonList = results;
-
+  const pokemonList: Pokemon[] = results;
+  /* const promises = [];
+  for (const pokemon of pokemonList) {
+    promises.push(axios.get(pokemon.url));
+  }
+  const toto = await Promise.all(promises);
+  toto.forEach((element) => {
+    const index = pokemonList.findIndex(
+      (pokemon) => pokemon.name === element.data.name
+    );
+    if (index == -1) return;
+    pokemonList[index].id = element.data.id;
+    pokemonList[index].sprite =
+      element.data.sprites.other.dream_world.front_default;
+    pokemonList[index].type = element.data.types[0].type.name;
+  }); */
   const nextContext = getPaginationInfo(next);
   const previousContext = getPaginationInfo(previous);
 
@@ -42,46 +79,95 @@ export const loader: LoaderFunction = async ({ request }) => {
   return json(data);
 };
 
-export default function Index() {
-  const { pokemonList, nextContext, previousContext, currentPage } =
-    useLoaderData<LoaderData>();
-  console.log({ nextContext, previousContext });
+const PokemonCard = ({ name, url }: Pokemon) => {
+  const { data, isLoading, isError } = useQuery(
+    ["detail", name],
+    (): Promise<{ data: PokemonDetailResponse }> => axios.get(url)
+  );
 
-  /*  const [nextPageUrl, setNextPageUrl]= useState()
-  const [prevPageUrl, setPrevPageUrl]= useState()
-
-  useEffect(()=>{
-    axios.get(currentPageUrl).then(res=>{
-      setNextPageUrl(res.data.next)
-      setPrevPageUrl(res.data.previous)
-    })
-  }) */
+  const res = data?.data;
+  function capitalizeWord(word: string) {
+    return word.charAt(0).toUpperCase() + word.slice(1);
+  }
+  // if (!res) return <div>No data</div>;
 
   return (
-    <div className="container">
-      <h1>Index</h1>
-      <ul>
+    <li
+      key={name}
+      className={clsx(
+        "rounded border-8 border-white/25 min-w-[150px] flex flex-col scale-95 hover:scale-110 transition duration-150 ease-in-out ",
+        res?.types[0].type.name
+      )}
+    >
+      {/* <li key={name} className={clsx("Cards")}> */}
+      {/* ajout class pour récup type de pokemon pour couleur card */}
+      {isLoading ? (
+        <div className="picture w-48 h-48"></div>
+      ) : (
+        <div className="picture mx-auto my-3">
+          <img
+            src={res?.sprites.other.dream_world.front_default}
+            alt={"picture of" + name}
+            className="h-48 w-auto p-2"
+          />
+        </div>
+      )}
+      <br />
+      <div className=" w-1/2 p-2 cardInfo mx-auto text-center bg-slate-300">
+        <p>
+          Nom: <br />
+          {capitalizeWord(name)}
+          {/* {capitalizeWord(name)} */}
+        </p>
+        <br />
+        {!isLoading && (
+          <>
+            <p>Id: </p>
+            <span>{res?.id}</span>
+            <br />
+          </>
+        )}
+      </div>
+      <Link to={name} className="mx-auto my-2">
+        <div className={"button"}> Infos </div>
+      </Link>
+    </li>
+  );
+};
+
+export default function Index() {
+  const { pokemonList, nextContext, previousContext } =
+    useLoaderData<LoaderData>();
+
+  return (
+    <div className="">
+      <h1 className=" text-center my-5 py-1">Index</h1>
+      <ul className=" w-4/5 grid grid-cols-6 grid-rows-3 gap-4 mx-auto ">
         {pokemonList.map((p) => (
-          <li key={p.name}>
-            <Link to={p.name}>{p.name}</Link>
-          </li>
+          <PokemonCard key={p.name} {...p} />
         ))}
       </ul>
-      {previousContext && (
-        <Link
-          to={`/pokedex?offset=${previousContext.offset}&limit=${previousContext.limit}`}
-        >
-          Précédent
-        </Link>
-      )}
+      <div className="sub_Menu">
+        {previousContext && (
+          <div className="menu_Button">
+            <Link
+              to={`/pokedex?offset=${previousContext.offset}&limit=${previousContext.limit}`}
+            >
+              Précédent
+            </Link>
+          </div>
+        )}
 
-      {nextContext && (
-        <Link
-          to={`/pokedex?offset=${nextContext.offset}&limit=${nextContext.limit}`}
-        >
-          Suivant
-        </Link>
-      )}
+        {nextContext && (
+          <div className="menu_Button">
+            <Link
+              to={`/pokedex?offset=${nextContext.offset}&limit=${nextContext.limit}`}
+            >
+              Suivant
+            </Link>
+          </div>
+        )}
+      </div>
     </div>
   );
 }
