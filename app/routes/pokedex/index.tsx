@@ -95,7 +95,7 @@ const PokemonCard = ({ name, url }: Pokemon) => {
     <li
       key={name}
       className={clsx(
-        "rounded border-8 border-white/25 min-w-[150px] flex flex-col scale-95 hover:scale-110 transition duration-150 ease-in-out ",
+        "rounded-xl border-8 border-white/25 min-w-[200px] max-w-[150px] flex flex-col scale-90 hover:scale-100 transition duration-150 ease-in-out ",
         res?.types[0].type.name
       )}
     >
@@ -142,7 +142,7 @@ export default function Index() {
   return (
     <div className="">
       <h1 className=" text-center my-5 py-1">Index</h1>
-      <ul className=" w-4/5 grid grid-cols-6 grid-rows-3 gap-4 mx-auto ">
+      <ul className=" w-4/5 mx-auto flex flex-wrap justify-center ">
         {pokemonList.map((p) => (
           <PokemonCard key={p.name} {...p} />
         ))}

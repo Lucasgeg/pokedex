@@ -1,3 +1,8 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+@font-face {
+  font-family: "POKEMON";
+  src: url("../../public/fonts/Pokemon/Hollow.ttf");
+}

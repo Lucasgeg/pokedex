@@ -1,7 +1,11 @@
 module.exports = {
   content: ["./app/routes/pokedex/*.tsx"],
   theme: {
-    extend: {},
+    extend: {
+      fontFamilly: {
+        pokemon: ["POKEMON"],
+      },
+    },
   },
   plugins: [],
 };
