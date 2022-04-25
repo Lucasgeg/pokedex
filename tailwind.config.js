@@ -3,7 +3,7 @@ module.exports = {
   theme: {
     extend: {
       fontFamilly: {
-        pokemon: ["POKEMON"],
+        pokemon: ["pokemon"],
       },
     },
   },

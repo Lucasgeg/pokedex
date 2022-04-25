@@ -3,6 +3,7 @@ import type { MetaFunction } from "remix";
 import { QueryClient, QueryClientProvider } from "react-query";
 import { ReactQueryDevtools } from "react-query/devtools";
 import style from "./styles/pokedex.css";
+import app from "./styles/app.css";
 
 const queryClient = new QueryClient();
 
@@ -26,9 +27,10 @@ function Document({
         <title>{title}</title>
         <Links />
         <script src="https://cdn.tailwindcss.com"></script>
+        <link rel="stylesheet" href={app} />
         <link rel="stylesheet" href={style} />
       </head>
-      <body className=" bg-amber-500">
+      <body className=" bg-amber-500 max-w-7xl mx-auto">
         {children}
         <Scripts />
         <LiveReload />

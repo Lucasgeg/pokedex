@@ -3,6 +3,28 @@
 @tailwind utilities;
 
 @font-face {
-  font-family: "POKEMON";
-  src: url("../../public/fonts/Pokemon/Hollow.ttf");
+  font-family: "pokemon";
+  src: url("/fonts/hollow.ttf"), url("/fonts/hollow.woff"),
+    url("/fonts/hollow.woff2");
+  font-weight: normal;
+  font-style: normal;
+}
+@font-face {
+  font-family: "solid";
+  src: url("/fonts/solid.ttf");
+  font-weight: normal;
+  font-style: normal;
+}
+.font-pokemon {
+  font-family: "pokemon";
+  font-weight: normal;
+  font-style: normal;
+}
+.font-solid {
+  font-family: "solid";
+  font-weight: normal;
+  font-style: normal;
+}
+body {
+  font-family: "solid", Arial, sans-serif;
 }

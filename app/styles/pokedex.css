@@ -128,6 +128,61 @@ tr:nth-child(odd):not(.exeption) {
 .fairy .button {
   background-color: #b15483;
 }
+.namenormal {
+  color: #72725e;
+}
+.namefire {
+  color: #e1680b;
+}
+.namewater {
+  color: #215ad5;
+}
+.nameelectric {
+  color: #c9a209;
+}
+.namegrass {
+  color: #439614;
+}
+.nameice {
+  color: #dfedec;
+}
+.namefighting {
+  color: #9e0904;
+}
+.namepoison {
+  color: #681266;
+}
+.nameground {
+  color: #967625;
+}
+.nameflying {
+  color: #694bba;
+}
+.namepsychic {
+  color: #e21f5a;
+}
+.namebug {
+  color: #7e8e03;
+}
+.namerock {
+  color: #a08813;
+}
+.nameghost {
+  color: #55397a;
+}
+.namedragon {
+  color: #4917c8;
+}
+.namedark {
+  color: #533928;
+}
+.namesteel {
+  color: #8484ac;
+}
+.namefairy {
+  color: #b15483;
+}
+
 .menu_Button {
   margin: 2px 5px;
   box-shadow: inset 0px 1px 0px 0px #bbdaf7;

@@ -5,6 +5,7 @@ import clsx from "clsx";
 import axios from "axios";
 
 import "~/styles/pokedex.css";
+import { useEffect, useState } from "react";
 
 type Pokemon = {
   name: string;
@@ -95,7 +96,7 @@ const PokemonCard = ({ name, url }: Pokemon) => {
     <li
       key={name}
       className={clsx(
-        "rounded-xl border-8 border-white/25 min-w-[200px] max-w-[150px] flex flex-col scale-90 hover:scale-100 transition duration-150 ease-in-out ",
+        "rounded-xl border-8 border-white/25 col-span-full md:col-span-6 lg:col-span-2 flex flex-col hover:scale-105 transition duration-150 ease-in-out ",
         res?.types[0].type.name
       )}
     >
@@ -113,8 +114,8 @@ const PokemonCard = ({ name, url }: Pokemon) => {
         </div>
       )}
       <br />
-      <div className=" w-1/2 p-2 cardInfo mx-auto text-center bg-slate-300">
-        <p>
+      <div className=" w-3/4 p-2 cardInfo mx-auto text-center bg-slate-300">
+        <p className=" text-center">
           Nom: <br />
           {capitalizeWord(name)}
           {/* {capitalizeWord(name)} */}
@@ -138,16 +139,31 @@ const PokemonCard = ({ name, url }: Pokemon) => {
 export default function Index() {
   const { pokemonList, nextContext, previousContext } =
     useLoaderData<LoaderData>();
-
+  const [search, setSearch] = useState("");
+  useEffect(() => {
+    axios
+      .get(`https://pokeapi.co/api/v2/pokemon/${search}`)
+      .then((res) => setSearch(res.data));
+  }, [search]);
+  const handleSubmit = (e: any) => {
+    e.preventDefault();
+  };
   return (
-    <div className="">
+    <div className=" w-full flex flex-col">
       <h1 className=" text-center my-5 py-1">Index</h1>
-      <ul className=" w-4/5 mx-auto flex flex-wrap justify-center ">
+      {/* Ajout d'une barre de recherche */}
+      <form className=" text-center mx-auto" onSubmit={handleSubmit}>
+        <input
+          className=" text-center mx-auto"
+          placeholder="Type a pokemon name"
+        />
+      </form>
+      <ul className=" grid grid-cols-12 gap-4 px-2 md:px-4 mt-5">
         {pokemonList.map((p) => (
           <PokemonCard key={p.name} {...p} />
         ))}
       </ul>
-      <div className="sub_Menu">
+      <div className="sub_Menu mt-5">
         {previousContext && (
           <div className="menu_Button">
             <Link
