@@ -1,13 +1,14 @@
 import axios from "axios";
 import clsx from "clsx";
-import { Router } from "react-router-dom";
 import { json, LoaderFunction } from "remix";
 import { useLoaderData } from "remix";
 type Pokemon = {
   name: string;
   id: number;
   sprites: {
+    front_default: string;
     other: {
+      home: { front_default: string };
       dream_world: {
         front_default: string;
       };
@@ -35,9 +36,6 @@ export const loader: LoaderFunction = async ({ params }) => {
 
 export default function PokemonById() {
   const { pokemonDetail } = useLoaderData<LoaderData>();
-  function capitalizeWord(word: string) {
-    return word.charAt(0).toUpperCase() + word.slice(1);
-  }
   const numberOfTypes = pokemonDetail.types.length;
   const numberOfAbilities = pokemonDetail.abilities.length;
   const handlePrev = () => {
@@ -52,7 +50,7 @@ export default function PokemonById() {
       >
         Previous
       </div>
-      <div className="border-8 border-red-600 rounded-full w-full header  bg-orange-200 text-lg mb-3 p-3 md:mt-24">
+      <div className="border-8 border-red-600 rounded-full w-full header  bg-orange-200 text-lg mb-3 p-3 md:mt-10">
         <h1 className="text-center ">
           Individual page of : <br />
           <span
@@ -60,7 +58,7 @@ export default function PokemonById() {
               "font-bold text-2xl name" + pokemonDetail.types[0].type.name
             }
           >
-            {capitalizeWord(pokemonDetail.name)}
+            <p className=" first-letter:uppercase">{pokemonDetail.name}</p>
           </span>
         </h1>
       </div>
@@ -72,9 +70,13 @@ export default function PokemonById() {
         )}
       >
         <img
-          src={pokemonDetail.sprites.other.dream_world.front_default}
+          src={
+            pokemonDetail.sprites.other.home.front_default
+              ? pokemonDetail.sprites.other.home.front_default
+              : pokemonDetail.sprites.other.dream_world.front_default
+          }
           alt={"Picture of " + pokemonDetail.name}
-          className="col-span-12 mx-auto md:col-span-4"
+          className="col-span-12 mx-auto md:col-span-4 my-auto"
         />
 
         <table className="col-span-12 sm:col-start-1 sm:col-span-4 sm:mb-6 md:col-span-3 ">

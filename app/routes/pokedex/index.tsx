@@ -5,19 +5,18 @@ import clsx from "clsx";
 import axios from "axios";
 
 import "~/styles/pokedex.css";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 
 type Pokemon = {
   name: string;
   url: string;
   id: number;
-  sprite: string;
+  sprite: string | null;
   type: string;
 };
 type PokePagination = { offset: string | null; limit: string | null };
 type LoaderData = {
   pokemonList: Pokemon[];
-
   currentPage: String;
   nextContext: PokePagination | null;
   previousContext: PokePagination | null;
@@ -25,7 +24,9 @@ type LoaderData = {
 type PokemonDetailResponse = {
   id: number;
   sprites: {
+    front_default: string;
     other: {
+      home: { front_default: string };
       dream_world: {
         front_default: string;
       };
@@ -87,10 +88,6 @@ const PokemonCard = ({ name, url }: Pokemon) => {
   );
 
   const res = data?.data;
-  function capitalizeWord(word: string) {
-    return word.charAt(0).toUpperCase() + word.slice(1);
-  }
-  // if (!res) return <div>No data</div>;
 
   return (
     <li
@@ -100,14 +97,16 @@ const PokemonCard = ({ name, url }: Pokemon) => {
         res?.types[0].type.name
       )}
     >
-      {/* <li key={name} className={clsx("Cards")}> */}
-      {/* ajout class pour récup type de pokemon pour couleur card */}
       {isLoading ? (
         <div className="picture w-48 h-48"></div>
       ) : (
         <div className="picture mx-auto my-3">
           <img
-            src={res?.sprites.other.dream_world.front_default}
+            src={
+              res?.sprites.other.dream_world.front_default
+                ? res?.sprites.other.dream_world.front_default
+                : res?.sprites.other.home.front_default
+            }
             alt={"picture of" + name}
             className="h-48 w-auto p-2"
           />
@@ -115,11 +114,8 @@ const PokemonCard = ({ name, url }: Pokemon) => {
       )}
       <br />
       <div className=" w-3/4 p-2 cardInfo mx-auto text-center bg-slate-300">
-        <p className=" text-center">
-          Nom: <br />
-          {capitalizeWord(name)}
-          {/* {capitalizeWord(name)} */}
-        </p>
+        <p className=" text-center">Name:</p>
+        <p className=" first-letter:uppercase">{name}</p>
         <br />
         {!isLoading && (
           <>
@@ -140,23 +136,18 @@ export default function Index() {
   const { pokemonList, nextContext, previousContext } =
     useLoaderData<LoaderData>();
   const [search, setSearch] = useState("");
-  useEffect(() => {
-    axios
-      .get(`https://pokeapi.co/api/v2/pokemon/${search}`)
-      .then((res) => setSearch(res.data));
-  }, [search]);
-  const handleSubmit = (e: any) => {
-    e.preventDefault();
-  };
   return (
     <div className=" w-full flex flex-col">
       <h1 className=" text-center my-5 py-1">Index</h1>
       {/* Ajout d'une barre de recherche */}
-      <form className=" text-center mx-auto" onSubmit={handleSubmit}>
+      <form className=" text-center mx-auto" action={`/pokedex/${search}`}>
         <input
           className=" text-center mx-auto"
-          placeholder="Type a pokemon name"
-        />
+          placeholder="Type a pokemon name or ID"
+          onChange={(e) => setSearch(e.target.value)}
+        />{" "}
+        <br />
+        <input type="submit" />
       </form>
       <ul className=" grid grid-cols-12 gap-4 px-2 md:px-4 mt-5">
         {pokemonList.map((p) => (
