@@ -82,7 +82,7 @@ export const loader: LoaderFunction = async ({ request }) => {
 };
 
 const PokemonCard = ({ name, url }: Pokemon) => {
-  const { data, isLoading, isError } = useQuery(
+  const { data, isLoading } = useQuery(
     ["detail", name],
     (): Promise<{ data: PokemonDetailResponse }> => axios.get(url)
   );

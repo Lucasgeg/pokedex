@@ -1,7 +1,9 @@
 import axios from "axios";
 import clsx from "clsx";
-import { json, LoaderFunction } from "remix";
+import { useState } from "react";
+import { json, LoaderFunction, NavLink, useParams } from "remix";
 import { useLoaderData } from "remix";
+
 type Pokemon = {
   name: string;
   id: number;
@@ -129,5 +131,27 @@ export default function PokemonById() {
         </table>
       </div>
     </>
+  );
+}
+export function ErrorBoundary() {
+  const params = useParams();
+
+  const [search, setSearch] = useState("");
+  return (
+    <div className="error-container flex flex-col justify-center w-full">
+      <h1 className=" mx-auto my-5">
+        {`Error ! We didn't find pokemon "${params.pokemonId}", try an other one please `}
+      </h1>
+      <form className=" text-center mx-auto " action={`/pokedex/${search}`}>
+        <input
+          className=" text-center mx-auto my-5"
+          placeholder="Type a pokemon name or ID"
+          onChange={(e) => setSearch(e.target.value)}
+        />{" "}
+        <br />
+        <input type="submit" className="my-5" value={"Search"} />
+        <NavLink to={"/pokedex"}> Home </NavLink>
+      </form>
+    </div>
   );
 }
